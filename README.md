@@ -94,17 +94,8 @@ I also learned to keep distinct outcomes separate: how many issues a system dete
 
 Automated checks cannot establish that a product is accessible in every context. Some issues require judgment, manual testing, assistive-technology testing, or feedback from people with disabilities. The workflow should be treated as a way to improve coverage and efficiency—not as a replacement for inclusive design or comprehensive validation.
 
-## An independent demo that could accompany this case study
 
-A public demonstration could use a small, original webpage with a few intentionally introduced accessibility issues. It could show:
-
-1. The initial page and its issues.
-2. Results from a publicly available accessibility checker.
-3. A corrected version of the page.
-4. A short comparison of what automation detected and what still required human judgment.
-
-Such a demo would illustrate the principles described here; it would **not** reproduce the internal BNY implementation or its design system.
 
 ---
 
-*This case study is intentionally conceptual and sanitized. Confirm that all reported metrics and descriptions are approved for public disclosure before publishing.*
+*This case study is intentionally conceptual and sanitized as the actual data I had worked on is highly confidential.*
