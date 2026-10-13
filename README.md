@@ -1,75 +1,110 @@
 # Accessibility-First Engineering
+## A case study in moving accessibility earlier in the development workflow
 
-*A sanitized case study on shifting accessibility from reactive remediation to a development-time consideration.*
+> **Scope and confidentiality:** This is a high-level, sanitized account of engineering work on an enterprise wealth-management application. It excludes proprietary source code, internal architecture, customer information, screenshots, and confidential design-system assets. The reported metrics and descriptions should be published only if approved for external disclosure.
 
-> **Context:** This case study describes the problem, approach, and lessons from work on an enterprise wealth-management application. It intentionally excludes proprietary source code, internal architecture, customer information, screenshots, and other confidential details.
+## Executive summary
+
+Accessibility work can become expensive when issues are discovered only after implementation. The workflow described here was designed to bring accessibility considerations closer to code creation, combining automated analysis, AI assistance grounded in relevant context, and human validation.
+
+The principle behind the work is what I call an **accessibility-first mindset**: consider accessibility as code is created, rather than treating it only as a remediation step at the end.
 
 ## The problem
 
-Accessibility issues are often discovered after code has been written. Engineers then have to identify violations, understand what needs to change, implement fixes, and validate the results. In a large application, this can turn accessibility remediation into a time-consuming, repetitive task.
+In a large web application, accessibility remediation can involve several repeated steps:
 
-In the workflow I worked on, engineers could spend entire days fixing accessibility violations.
+- Finding violations against applicable Web Content Accessibility Guidelines (WCAG) criteria.
+- Understanding why a particular implementation fails and what needs to change.
+- Implementing a fix that fits the application's existing components and design conventions.
+- Validating that the violation has been addressed without introducing regressions.
 
-I wanted to make accessibility less of a downstream cleanup exercise and more of a consideration throughout development.
+Before this workflow, engineers could spend entire days fixing accessibility violations. Generic suggestions are not always sufficient in an enterprise application: a technically plausible fix may not fit the component patterns, styling conventions, or implementation constraints of the design system already in use.
 
-## The idea: an accessibility-first mindset
+The goal was to reduce that effort while making accessibility a more consistent part of development.
 
-I use the term **accessibility-first mindset** to describe an approach in which accessibility is considered while code is being created—not only after implementation, when violations are discovered.
+## Workflow at a glance
 
-The goal was to help engineers move from:
+The following diagram describes the approach at a conceptual level, not the internal architecture of any company system.
 
-**Write code → discover accessibility issues → remediate → validate**
+```mermaid
+flowchart TD
+    A[Code being developed] --> B[Automated accessibility analysis]
+    B --> C[WCAG-related violation and context]
+    C --> D[AI receives relevant rule and design-system context]
+    D --> E[Suggested code change aligned to existing conventions]
+    E --> F[Human review and validation]
+    F --> G{Issue resolved?}
+    G -- Yes --> H[Continue development with accessibility considered]
+    G -- No --> C
+    H -. Feedback for future code .-> A
+```
 
-toward a workflow where accessibility checks and guidance are incorporated earlier, reducing the amount of avoidable rework.
+The key is the context passed to the AI: not just “fix this accessibility issue,” but the relevant violation and the conventions of the application's existing design system. This helps make suggested changes more specific to the product instead of relying on generic patterns.
 
-## The approach
+## Design approach
 
-I designed and built an accessibility testing and remediation workflow that combined three elements:
+### 1. Identify WCAG-related violations
 
-1. **Automated analysis** to surface accessibility violations in web code, including HTML, CSS, and JavaScript.
-2. **AI-assisted workflows** to help engineers understand and address issues and to encourage accessibility considerations during code generation.
-3. **Human validation** to review results and verify remediation rather than treating automated output as proof of correctness.
+Automated analysis helps surface potential accessibility violations in web code, including HTML, CSS, and JavaScript. The findings provide a starting point for understanding the issue and the relevant accessibility requirement.
 
-The central design principle was that automation should help engineers identify and resolve problems more efficiently, while human judgment remains part of the validation process.
+A detection result is a signal to investigate, not by itself proof that an experience is inaccessible in every context.
 
-This page intentionally stays at a high level and does not disclose internal implementation details.
+### 2. Ground AI assistance in relevant context
 
-## Impact
+Rather than asking an AI system for a generic fix, the workflow provides context about the identified violation and the design-system conventions used by the application. This matters because accessibility remediation must work within the product's actual component and styling patterns—not just produce code that looks plausible in isolation.
 
-Based on the measurements available for the workflow:
+This case study intentionally does not name internal systems or disclose proprietary design-system documentation, prompts, code, or architecture.
 
-- **Time:** Work that previously could take engineers entire days was brought to under 30 minutes in the workflow.
-- **Detection:** The workflow was designed to identify approximately **85–90% of accessibility violations**.
+### 3. Keep fixes aligned with the existing design system
 
-These figures describe the reported workflow outcomes; they should not be interpreted as a universal benchmark or a guarantee that every detected issue was automatically fixed. Detection and successful remediation are different measures, and human validation remains important.
+The workflow is specific to the design system used by the application at BNY. The intent is to suggest remediation that fits the components and conventions engineers already use, rather than treating the application as a generic web project.
 
-## What I learned
+That specificity is an important part of the approach: an accessibility fix should address the WCAG-related issue while remaining consistent with the product's established implementation patterns.
 
-The most valuable change was not simply making an existing task faster. It was moving accessibility earlier in the development process.
+### 4. Validate with human judgment
 
-A useful engineering workflow should do more than flag issues after the fact. It should give engineers feedback when they can still act on it, make the right path easier to follow, and support validation of the result.
+AI-generated changes and automated checks still require review. Human validation helps assess whether the proposed fix is appropriate and whether the issue has actually been resolved.
 
-The broader lesson is that automation is most useful when it improves both **developer workflow** and **the experience of the people who use the resulting software**.
+### 5. Build an accessibility-first mindset
+
+The workflow aims to shift the question from *“How do we fix these accessibility violations now?”* to *“How do we create code with accessibility in mind from the beginning?”*
+
+## Reported impact
+
+The measurements reported for this workflow were:
+
+| Measure | Reported outcome |
+| --- | --- |
+| Time spent on accessibility work | Tasks that could previously take entire days were brought to under 30 minutes in the workflow. |
+| Violation detection | The workflow was designed to identify approximately 85–90% of accessibility violations. |
+
+**Interpret these measures carefully:** time depends on the task and comparison baseline. Detection coverage does not mean that the same percentage of issues were automatically fixed, nor that all remaining accessibility concerns were eliminated. Human validation remains important.
 
 ## My contribution
 
-I designed and built the core accessibility testing and remediation workflow described here, combining automated analysis, AI-assisted workflows, and human validation.
+I designed and built the core workflow, bringing together automated accessibility analysis, AI assistance grounded in the relevant WCAG issue and BNY application's design-system context, and human validation. My focus was on making accessibility issues easier to surface and address, while encouraging accessibility to be considered earlier in development.
 
-This is a sanitized account of the work. It does not include proprietary code, internal tools or architecture, confidential screenshots, or information about customers or systems.
+## What I learned
 
-## Limitations and next steps
+The key engineering lesson was that context matters. A generic AI suggestion may be syntactically reasonable but still conflict with the component patterns or design conventions of a real product. Grounding the suggestion in the relevant accessibility requirement and the design system makes the workflow more useful to engineers.
 
-Accessibility is broader than what any automated workflow can detect. Automated checks can surface many issues, but they cannot establish that an experience is accessible in every real-world context. Human review and, where appropriate, testing with assistive technologies and people with disabilities remain important.
+I also learned to keep distinct outcomes separate: how many issues a system detects, how much time a workflow saves, and whether a fix is genuinely correct are related but different questions.
 
-Potential next steps for a standalone demonstration would include:
+## Limitations
 
-- Building a small example web page with common accessibility issues.
-- Running public accessibility checks against it.
-- Showing suggested fixes and validating the resulting page.
-- Documenting what the automated checks catch—and what still requires human judgment.
+Automated checks cannot establish that a product is accessible in every context. Some issues require judgment, manual testing, assistive-technology testing, or feedback from people with disabilities. The workflow should be treated as a way to improve coverage and efficiency—not as a replacement for inclusive design or comprehensive validation.
 
-Such a demo would be an independent illustration of the ideas in this case study, not a reproduction of the internal BNY implementation.
+## An independent demo that could accompany this case study
+
+A public demonstration could use a small, original webpage with a few intentionally introduced accessibility issues. It could show:
+
+1. The initial page and its issues.
+2. Results from a publicly available accessibility checker.
+3. A corrected version of the page.
+4. A short comparison of what automation detected and what still required human judgment.
+
+Such a demo would illustrate the principles described here; it would **not** reproduce the internal BNY implementation or its design system.
 
 ---
 
-*Written as a public, high-level description of engineering work. All metrics should be confirmed as appropriate for external disclosure before publication.*
+*This case study is intentionally conceptual and sanitized. Confirm that all reported metrics and descriptions are approved for public disclosure before publishing.*
